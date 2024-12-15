@@ -870,8 +870,8 @@ th {
 </head>
 
 <body>
-  aaa
-
+  <p>Given a number of bits, count the frequency of set bits for all possible numbers
+</p>
 <form>
 
   <label for="bits">Number of bits:</label>
@@ -890,60 +890,9 @@ th {
   };
 
   function Start_Worker(input) {
-    let lines = input.lines_toWebworker
-    let skip = input.skip;
-    let roll_arrays = [];
-    let rolls = [];
-    let dice = [];
-    let sides_array = [];
-    let roll_counts = [];
-    let done;
-    do { //for each roll
-      done = 1; //assume we are done. prove otherwise.
-      //for each line
-      for (let ln = 0; ln < lines.length; ln++) {
-        //test to see if all rolls have been completed
-        if (typeof roll_counts[ln] == "undefined") { //create if required
-          roll_counts[ln] = 0;
-        }
-        if (lines[ln].rolls > roll_counts[ln]) { //still not done
-          roll_counts[ln]++;
-          done = 0;
-        } else { //this line is done
-          continue;
-        }
-        //sum dice 
-        let sum = 0;
-        //let sum = 0;
-        for (let d = 1; d <= lines[ln].dice; d++) { //# or dice to roll
-          //randomly choose a die side 
-          let side = Math.floor(Math.random() * lines[ln].sides_array.length);
-          //what is its value?
-          let value = lines[ln].sides_array[side];
-          sum = sum + value;
-        }
-        //add to roll_arrays
-        if (typeof roll_arrays[ln] == "undefined") { //create if required
-          roll_arrays[ln] = [];
-        }
-        if (typeof roll_arrays[ln][sum] == "undefined") { //create if required
-          roll_arrays[ln][sum] = 0;
-        }
-        //increase roll count by 1
-        roll_arrays[ln][sum]++;
-        if (roll_counts[ln] % skip == 0) {
-          postMessage({
-            "roll_counts": roll_counts,
-            "roll_arrays": roll_arrays
-          });
-        }
-      }
-    }
-    while (!done);
-    //one more print!
+    
     postMessage({
-      "roll_counts": roll_counts,
-      "roll_arrays": roll_arrays
+      
     });
   }
 </script>
@@ -978,9 +927,9 @@ function RunForestRun() {
       .filter((x) => x == "1").length;
     number.push(a);
     numberOf1BitsInNumber.push(count);
-if(count <= 0){
-  continue;
-}
+    if (count <= 0) {
+      continue;
+    }
     if (typeof totalNumberOf1BitsOutOfPossibleBits[count] == "undefined") {
       totalNumberOf1BitsOutOfPossibleBits[count] = 1;
     } else {
@@ -1007,7 +956,7 @@ if(count <= 0){
     }
   ];
 
-  let layout = { title: "Bit count (1) for each number" };
+  let layout = { title: "Set bit count for each number" };
   Plotly.newPlot("plot1", data, layout);
 
   data = [
@@ -1020,7 +969,7 @@ if(count <= 0){
     }
   ];
 
-  layout = { title: "Bit count (1) for each 'possible' total bit count" };
+  layout = { title: "Set bit count frquency for all possible numbers" };
   Plotly.newPlot("plot2", data, layout);
 }
     </script>
