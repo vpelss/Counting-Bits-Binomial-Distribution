@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" >
 
@@ -899,6 +900,7 @@ th {
   
       <script id="rendered-js" >
 // https://www.geeksforgeeks.org/count-set-bits-in-an-integer/
+// https://www.mathsisfun.com/combinatorics/combinations-permutations.html
 
 //set html events
 let run_forest = document.getElementById("runforest");
@@ -920,25 +922,33 @@ function RunForestRun() {
   document.getElementById("plot2").innerHTML = ""; //clear plots if any
   let bits = document.getElementById("bits").value;
   let pow = Math.pow(2, bits);
-  for (a = 0; a < pow; a++) {
-    let count = a
-      .toString(2)
-      .split("")
-      .filter((x) => x == "1").length;
-    number.push(a);
-    numberOf1BitsInNumber.push(count);
-    if (count <= 0) {
-      continue;
+  let possible1Bits = [];
+  let possible1BitsCount = [];
+  let limit = 5; //for large numbers turn off manual count because of js array limit
+  if (bits < limit) {
+    for (a = 0; a < pow; a++) {
+      let count = a
+        .toString(2)
+        .split("")
+        .filter((x) => x == "1").length;
+      number.push(a);
+      numberOf1BitsInNumber.push(count);
+      if (count <= 0) {
+        continue;
+      }
+      if (typeof totalNumberOf1BitsOutOfPossibleBits[count] == "undefined") {
+        totalNumberOf1BitsOutOfPossibleBits[count] = 1;
+      } else {
+        totalNumberOf1BitsOutOfPossibleBits[count]++;
+      }
     }
-    if (typeof totalNumberOf1BitsOutOfPossibleBits[count] == "undefined") {
-      totalNumberOf1BitsOutOfPossibleBits[count] = 1;
-    } else {
-      totalNumberOf1BitsOutOfPossibleBits[count]++;
+  } else {
+    for (a = 1; a <= bits; a++) {
+      let count = factorial(bits) / (factorial(a) * factorial(bits - a));
+      totalNumberOf1BitsOutOfPossibleBits[a] = count;
     }
   }
 
-  let possible1Bits = [];
-  let possible1BitsCount = [];
   let keys = Object.keys(totalNumberOf1BitsOutOfPossibleBits);
   keys = keys.sort();
   keys.forEach(function (x) {
@@ -946,6 +956,7 @@ function RunForestRun() {
     possible1BitsCount.push(totalNumberOf1BitsOutOfPossibleBits[x]);
   });
 
+  if (bits < limit) {
   let data = [
     {
       x: number,
@@ -958,7 +969,10 @@ function RunForestRun() {
 
   let layout = { title: "Set bit count for each number" };
   Plotly.newPlot("plot1", data, layout);
-
+  }else{
+    document.getElementById("plot1").innerHTML = "Off due to JS array limit";
+  }
+  
   data = [
     {
       x: possible1Bits,
@@ -971,6 +985,16 @@ function RunForestRun() {
 
   layout = { title: "Set bit count frquency for all possible numbers" };
   Plotly.newPlot("plot2", data, layout);
+}
+
+function factorial(num) {
+  var result = num;
+  if (num === 0 || num === 1) return 1;
+  while (num > 1) {
+    num--;
+    result *= num;
+  }
+  return result;
 }
     </script>
 
