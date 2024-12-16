@@ -875,8 +875,8 @@ th {
 </p>
 <form>
 
-  <label for="bits">Number of bits:</label>
-  <input type="number" id="bits" name="bits" min="0" max="5000" value="4">
+  <label for="bits">Number of bits (170 max):</label>
+  <input type="number" id="bits" name="bits" min="0" max="170" value="4">
   <p></p>
   <button type="button" id="runforest" value="1">Plot</button>
 </form>
@@ -921,11 +921,11 @@ function RunForestRun() {
 
   document.getElementById("plot1").innerHTML = ""; //clear plots if any
   document.getElementById("plot2").innerHTML = ""; //clear plots if any
-  let bits = document.getElementById("bits").value;
+  let bits = document.getElementById("bits").value; //limit to 170 or factorial hits JS infinity
   let pow = Math.pow(2, bits);
   let possible1Bits = [];
   let possible1BitsCount = [];
-  let limit = 5; //for large numbers turn off manual count because of js array limit
+  let limit = 16; //for large numbers turn off manual count because of js array limit
   if (bits < limit) {
     for (a = 0; a < pow; a++) {
       let count = a
