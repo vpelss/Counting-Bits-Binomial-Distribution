@@ -1,1 +1,1 @@
-# Counting-Bits
+# Counting Bits BinomialDistribution
