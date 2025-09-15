@@ -871,7 +871,7 @@ th {
 </head>
 
 <body>
-  <p>Given a number of bits, count the frequency of set bits for all possible numbers. Binomial Distribution
+  <p>Given a number of bits, count the frequency of set bits for all possible binary numbers. Pascal's triangle : Binomial distribution for p = 0.5
 </p>
 <form>
 
@@ -968,7 +968,7 @@ function RunForestRun() {
     }
   ];
 
-  let layout = { title: "Set bit count for each number" };
+  let layout = { title: "Number of set bits (1) for each binary number" };
   Plotly.newPlot("plot1", data, layout);
   }else{
     document.getElementById("plot1").innerHTML = "Off due to JS array limit";
@@ -984,7 +984,7 @@ function RunForestRun() {
     }
   ];
 
-  layout = { title: "Set bit count frquency for all possible numbers" };
+  layout = { title: "A count of the binary numbers with x bits set to 1" };
   Plotly.newPlot("plot2", data, layout);
 }
 
