@@ -934,7 +934,7 @@ function RunForestRun() {
         .filter((x) => x == "1").length;
       number.push(a);
       numberOf1BitsInNumber.push(count);
-      if (count <= 0) {
+      if (count < 0) {
         continue;
       }
       if (typeof totalNumberOf1BitsOutOfPossibleBits[count] == "undefined") {
@@ -944,7 +944,7 @@ function RunForestRun() {
       }
     }
   } else {
-    for (a = 1; a <= bits; a++) {
+    for (a = 0; a <= bits; a++) {
       let count = factorial(bits) / (factorial(a) * factorial(bits - a));
       totalNumberOf1BitsOutOfPossibleBits[a] = count;
     }
