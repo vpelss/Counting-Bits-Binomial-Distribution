@@ -12,8 +12,6 @@
 
     <link rel="canonical" href="https://codepen.io/vpelss/pen/PwYbgKx">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <ascript src="https://cdn.plot.ly/plotly-latest.min.js"></ascript>
-<script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
   
   
   
@@ -895,6 +893,7 @@ th {
 <div id="plot2"></div>
 
 <script id="webworker" _type="javascript/worker">
+  /*
   onmessage = function(event) {
     var input = event.data;
     Start_Worker(input);
@@ -903,8 +902,9 @@ th {
   function Start_Worker(input) {
     postMessage({});
   }
+  */
 </script>
-  
+  <script src='https://cdn.plot.ly/plotly-3.1.0.min.js'></script>
       <script id="rendered-js" >
 // https://www.geeksforgeeks.org/count-set-bits-in-an-integer/
 // https://www.mathsisfun.com/combinatorics/combinations-permutations.html
@@ -915,72 +915,82 @@ let run_forest = document.getElementById("runforest");
 run_forest.onclick = RunForestRun;
 
 //get inline webworker code.
+/*
 var inline_webworker_blob = new Blob(
   [document.querySelector("#webworker").textContent],
   { type: "text/javascript" }
 );
 let webworker;
+*/
 
 function RunForestRun() {
   let number = [];
-  let numberOf1BitsInNumber = [];
-  let totalNumberOf1BitsOutOfPossibleBits = {};
+  let YSetBitsInX = [];
+  let YNumbersWithXBitsSet = {};
 
   document.getElementById("plot1").innerHTML = ""; //clear plots if any
   document.getElementById("plot2").innerHTML = ""; //clear plots if any
-  let bits = document.getElementById("bits").value; //limit to 170 or factorial hits JS infinity
-  let pow = Math.pow(2, bits);
+  let bits = BigInt( document.getElementById("bits").value ); //limit to 170 or factorial hits JS infinity
+  let pow = Math.pow(2, Number(bits));
   let possible1Bits = [];
   let possible1BitsCount = [];
-  let limit = 16; //for large numbers turn off manual count because of js array limit
-  if (bits < limit) {
+  let limit = 16; //for large numbers turn off manual count and plot of number of bits per number because of js array limit : 2^16 is too big
+  if (bits < limit) { //less than 171
+    //build Pascal's triangle : Binomial distribution
     for (a = 0; a < pow; a++) {
+      //how many bits in this number
       let count = a
         .toString(2)
         .split("")
         .filter((x) => x == "1").length;
       number.push(a);
-      numberOf1BitsInNumber.push(count);
+      YSetBitsInX.push(count);
       if (count < 0) {
+        //???????????????
         continue;
       }
-      if (typeof totalNumberOf1BitsOutOfPossibleBits[count] == "undefined") {
-        totalNumberOf1BitsOutOfPossibleBits[count] = 1;
+      //increase YNumbersWithXBitsSet for this number of bits
+      if (typeof YNumbersWithXBitsSet[count] == "undefined") {
+        //create aray value if it doe not exist
+        YNumbersWithXBitsSet[count] = 1;
       } else {
-        totalNumberOf1BitsOutOfPossibleBits[count]++;
+        YNumbersWithXBitsSet[count]++;
       }
     }
   } else {
-    for (a = 0; a <= bits; a++) {
-      let count = factorial(bits) / (factorial(a) * factorial(bits - a));
-      totalNumberOf1BitsOutOfPossibleBits[a] = count;
+    //mabye bint ????????????????
+    //calculate a row in pascal's triange. same as Binomial distribution for p = 0.5
+   //https://www.calculatorsoup.com/calculators/discretemathematics/pascals-triangle.php
+    for (bit = 0; bit <= bits; bit++) {
+      let count = factorial(bits) / (factorial(bit) * factorial(bits - bit));
+      YNumbersWithXBitsSet[bit] = count;
     }
   }
 
-  let keys = Object.keys(totalNumberOf1BitsOutOfPossibleBits);
+  let keys = Object.keys(YNumbersWithXBitsSet);
   keys = keys.sort();
   keys.forEach(function (x) {
     possible1Bits.push(x);
-    possible1BitsCount.push(totalNumberOf1BitsOutOfPossibleBits[x]);
+    possible1BitsCount.push(YNumbersWithXBitsSet[x]);
   });
 
   if (bits < limit) {
-  let data = [
-    {
-      x: number,
-      y: numberOf1BitsInNumber,
-      type: "bar",
-      orientation: "v",
-      marker: { color: "rgba(0,0,255)" }
-    }
-  ];
+    let data = [
+      {
+        x: number,
+        y: YSetBitsInX,
+        type: "bar",
+        orientation: "v",
+        marker: { color: "rgba(0,0,255)" }
+      }
+    ];
 
-  let layout = { title: "Number of set bits (1) for each binary number" };
-  Plotly.newPlot("plot1", data, layout);
-  }else{
+    let layout = { title: "Number of set bits (1) for each binary number" };
+    Plotly.newPlot("plot1", data, layout);
+  } else {
     document.getElementById("plot1").innerHTML = "Off due to JS array limit";
   }
-  
+
   data = [
     {
       x: possible1Bits,
