@@ -906,8 +906,10 @@ let run_forest = document.getElementById("runforest");
 run_forest.onclick = RunForestRun;
 
 // JS limits:
-// 171 bits INT will not work in factorial, so need BigInt for over 170 bits OR we could just count (TOO SLOW) the number of bits for all numbers over 170 bits : 170^2. Lets do both
-// 16 bit width will not work for NumberOfSetBitsInX array as array limit is 2 ^ 16. So we turn off graph
+
+// 16 bit width will not work for NumberOfSetBitsInX array as array limit is 2 ^ 16. So we turn off top graph
+
+// 171 bits INT will not work in factorial, so need BigInt for over 170 bits OR we could just count (TOO SLOW) the number of bits for all numbers over 170 bits : 2^170. Lets do both
 
 function RunForestRun() {
   let xNnumber = [];
@@ -916,54 +918,56 @@ function RunForestRun() {
 
   document.getElementById("plot1").innerHTML = ""; //clear plots if any
   document.getElementById("plot2").innerHTML = ""; //clear plots if any
-  let bits = BigInt( document.getElementById("bits").value ); //limit to 170 or factorial hits JS infinity
+  let bits = BigInt(document.getElementById("bits").value); //limit to 170 or factorial hits JS infinity
+
   let pow = Math.pow(2, Number(bits));
   let possible1Bits = [];
   let possible1BitsCount = [];
-  let limit = 16; //for large numbers turn off manual count and plot of number of bits per number because of js array limit : 2^16 is too big
+  let limit = 16; //for large numbers turn off manual count and plot of number of
+  let under16;
+
+  if (bits <= limit) {
+    under16 = true;
+  }
+
+  //bits per number because of js array limit : 2^16 is too big
   //if (bits < limit) { //less than 171
+  if (under16) {
     for (a = 0; a < pow; a++) {
       //how many bits in this number
-     let numberOfBits = a
+      let numberOfBits = a
         .toString(2)
         .split("")
         .filter((x) => x == "1").length;
-    
-       if (bits < limit) { //less than 171
       xNnumber.push(a);
       NumberOfSetBitsInX.push(numberOfBits);
-      }
-   
-       //build Pascal's triangle : Binomial distribution
-      //increase HowManyNumbersWithXBitsSet for this number of bits
-      if (typeof HowManyNumbersWithXBitsSet[numberOfBits] == "undefined") {
-        //create aray value if it doe not exist
-        HowManyNumbersWithXBitsSet[numberOfBits] = 1;
-      } else {
-        HowManyNumbersWithXBitsSet[numberOfBits]++;
-      }
-     }
-      /*
-  } else {
-    //mabye bint ????????????????
-    //calculate a row in pascal's triange. same as Binomial distribution for p = 0.5
-   //https://www.calculatorsoup.com/calculators/discretemathematics/pascals-triangle.php
-    for (bit = 0; bit <= bits; bit++) {
-      let count = factorial(bits) / (factorial(bit) * factorial(bits - bit));
-      HowManyNumbersWithXBitsSet[bit] = count;
     }
   }
-  */
-//convert obj HowManyNumbersWithXBitsSet[numberOfBits] = howMany 
-//into to 2 arrays for plotting
+
+  //calculate a row in pascal's triange. same as Binomial distribution for p = 0.5
+  //https://www.calculatorsoup.com/calculators/discretemathematics/pascals-triangle.php
+  //let row = bits - 1n;
+   let row = bits;
+  for (bit = 0n; bit <= row; bit++) {
+    if (bit == 0 || bit == row) {
+      HowManyNumbersWithXBitsSet[bit] = 1;
+      continue;
+    }
+    let count = factorial(row) / (factorial(bit) * factorial(row - bit));
+    HowManyNumbersWithXBitsSet[bit] = count;
+  }
+
+  //convert obj HowManyNumbersWithXBitsSet[numberOfBits] = howMany
+  //into to 2 arrays for plotting
   let keys = Object.keys(HowManyNumbersWithXBitsSet);
   keys = keys.sort();
   keys.forEach(function (x) {
     possible1Bits.push(x);
-    possible1BitsCount.push(HowManyNumbersWithXBitsSet[x]);
+    possible1BitsCount.push(Number(HowManyNumbersWithXBitsSet[x]));
   });
 
-  if (bits < limit) { //only plot for less than 16 bits
+  if (under16) {
+    //only plot for less than 16 bits
     let data = [
       {
         x: xNnumber,
