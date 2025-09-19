@@ -870,29 +870,29 @@ th {
 </head>
 
 <body>
-  <p>Plot how many bits are in the binary representation of each number. </p>
-
-<p>Given a number of bits, count the frequency of the set bits for all possible binary numbers. Pascal's triangle : Binomial distribution for p = 0.5
+  <p>
+  1st Graph: Given a number of bits, count the frequency of the set bits for all possible binary numbers. Pascal's triangle : Binomial distribution for p = 0.5
+  <br>
+  <a href="https://www.karlsims.com/marbles/" target="blank">https://www.karlsims.com/marbles/</a>
+  <br>
+  <a href="https://en.citizendium.org/wiki/Pascal%27s_triangle" target="blank">https://en.citizendium.org/wiki/Pascal%27s_triangle</a>
+  <br>
+  2nd Graph: Plot how many bits are in the binary representation of each number.
 </p>
-
-<a href="https://www.karlsims.com/marbles/" target="blank">https://www.karlsims.com/marbles/</a>
-<br>
-<a href="https://en.citizendium.org/wiki/Pascal%27s_triangle" target="blank">https://en.citizendium.org/wiki/Pascal%27s_triangle</a>
 
 <p></p>
 
 <form>
-
   <label for="bits">Number of bits (170 max):</label>
   <input type="number" id="bits" name="bits" min="0" max="170" value="4" required>
   <p></p>
   <button type="button" id="runforest" value="1">Plot</button>
 </form>
 
-<p>Number of set bits (1) for each binary number</p>
-<div id="plot1"></div>
 <p>A count of the binary numbers with x bits set to 1</p>
 <div id="plot2"></div>
+<p>Number of set bits (1) for each binary number</p>
+<div id="plot1"></div>
   <script src='https://cdn.plot.ly/plotly-3.1.0.min.js'></script>
       <script id="rendered-js" >
 // https://www.geeksforgeeks.org/count-set-bits-in-an-integer/
@@ -909,7 +909,7 @@ run_forest.onclick = RunForestRun;
 
 // 16 bit width will not work for NumberOfSetBitsInX array as array limit is 2 ^ 16. So we turn off top graph
 
-// 171 bits INT will not work in factorial, so need BigInt for over 170 bits OR we could just count (TOO SLOW) the number of bits for all numbers over 170 bits : 2^170. Lets do both
+// 171 bits INT will not work in factorial(), so need to use BigInt
 
 function RunForestRun() {
   let xNnumber = [];
@@ -946,14 +946,12 @@ function RunForestRun() {
 
   //calculate a row in pascal's triange. same as Binomial distribution for p = 0.5
   //https://www.calculatorsoup.com/calculators/discretemathematics/pascals-triangle.php
-  //let row = bits - 1n;
-   let row = bits;
-  for (bit = 0n; bit <= row; bit++) {
-    if (bit == 0 || bit == row) {
+  for (bit = 0n; bit <= bits; bit++) {
+    if (bit == 0 || bit == bits) {
       HowManyNumbersWithXBitsSet[bit] = 1;
       continue;
     }
-    let count = factorial(row) / (factorial(bit) * factorial(row - bit));
+    let count = factorial(bits) / (factorial(bit) * factorial(bits - bit));
     HowManyNumbersWithXBitsSet[bit] = count;
   }
 
