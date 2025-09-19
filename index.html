@@ -35,12 +35,12 @@
 <form>
   <label for="bits">Number of bits (1000 max):</label>
   <input type="number" id="bits" name="bits" min="0" max="1000" value="4" required>
-  <p></p>
+  &nbsp;
   <button type="button" id="runforest" value="1">Plot</button>
 </form>
 
 <div id="plot2"></div>
-<p>Number of set bits (1) for each binary number</p>
+
 <div id="plot1"></div>
   <script src='https://cdn.plot.ly/plotly-3.1.0.min.js'></script>
       <script id="rendered-js" >
@@ -123,8 +123,8 @@ function RunForestRun() {
         x: xNnumber,
         y: NumberOfSetBitsInX,
         type: "bar",
-        orientation: "v",
-        marker: { color: "rgba(0,0,255)" }
+        _orientation: "v",
+        _marker: { color: "rgba(0,0,255)" }
       }
     ];
     let layout = {
@@ -150,8 +150,8 @@ function RunForestRun() {
   data2 = [
     {
       type: "bar",
-      orientation: "v",
-      marker: { color: "rgba(0,0,255)" },
+      _orientation: "v",
+      _marker: { color: "rgba(0,0,255)" },
       x: possible1Bits,
       y: possible1BitsCount
     }
